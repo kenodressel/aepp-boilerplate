@@ -11,7 +11,8 @@ module.exports = {
         path.join(__dirname, './src/index.html'),
         path.join(__dirname, './**/*.vue'),
         path.join(__dirname, './src/**/*.js')
-      ]
+      ],
+      whitelistPatterns: [/^ae/]
     }),
     require('cssnano')({
       'preset': [
