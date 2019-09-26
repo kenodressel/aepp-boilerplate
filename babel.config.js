@@ -4,13 +4,15 @@ module.exports = {
     {
       debug: false,
       useBuiltIns: 'usage',
-      corejs: '2.0.0',
+      corejs: 3
     }
   ]],
   plugins: [
     '@babel/plugin-proposal-object-rest-spread',
     '@babel/plugin-transform-modules-commonjs',
-    '@babel/plugin-transform-runtime',
+    ['@babel/plugin-transform-runtime', {
+      corejs: 3,
+    }],
     '@babel/plugin-transform-block-scoping'
   ]
-}
+};
