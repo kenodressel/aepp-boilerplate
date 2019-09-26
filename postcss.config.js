@@ -4,6 +4,13 @@ module.exports = {
     require('postcss-import'),
     require('tailwindcss'),
     require('autoprefixer'),
+    require('@fullhuman/postcss-purgecss')({
+      content: [
+        path.join(__dirname, './src/index.html'),
+        path.join(__dirname, './**/*.vue'),
+        path.join(__dirname, './src/**/*.js')
+      ]
+    }),
     require('cssnano')({
       'preset': [
         'default',
