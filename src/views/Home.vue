@@ -9,6 +9,7 @@
 
 <script>
   import aeternity from "../utils/aeternity";
+  import axios from "axios";
 
   export default {
     name: 'Home',
