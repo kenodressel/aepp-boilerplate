@@ -32,7 +32,7 @@ aeternity.initProvider = async () => {
     aeternity.height = await aeternity.client.height();
     aeternity.networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
     if(aeternity.contractAddress)
-      aeternity.contract = await aeternity.client.getContractInstance(registryContractSource, {contractAddress: aeternity.contractAddress});
+      aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
     return true;
   } catch (e) {
     console.error(e);
@@ -51,11 +51,20 @@ aeternity.initMobileBaseAepp = async () => {
 };
 
 aeternity.initStaticClient = async () => {
+  // TESTNET
   return Universal({
-    url: 'http://localhost:3001',
-    internalUrl: 'http://localhost:3001',
-    compilerUrl: 'http://localhost:3080'
+    url: 'https://sdk-testnet.aepps.com',
+    internalUrl: 'https://sdk-testnet.aepps.com',
+    compilerUrl: 'https://compiler.aepps.com',
   });
+  // MAINNET
+  /*
+    return Universal({
+    url: 'https://sdk-mainnet.aepps.com',
+    internalUrl: 'https://sdk-mainnet.aepps.com',
+    compilerUrl: 'https://compiler.aepps.com',
+  });
+   */
 };
 
 aeternity.hasActiveWallet = () => {
