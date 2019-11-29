@@ -1,6 +1,8 @@
 import './main.css'
+
 import '@aeternity/aepp-components/dist/aepp.fonts.css'
-import '@aeternity/aepp-components/dist/aepp.components.css'
+// Enable if using aeternity icons
+// import '@aeternity/aepp-components/dist/ae-icon/ae-icon.css'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
