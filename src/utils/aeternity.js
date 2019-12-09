@@ -24,7 +24,6 @@ const timeout = async (promise) => {
 
 aeternity.initProvider = async () => {
   try {
-
     aeternity.address = await aeternity.client.address();
     aeternity.balance = await aeternity.client.balance(aeternity.address)
       .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
