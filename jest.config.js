@@ -1,6 +1,6 @@
 const packagesToTranspile = [
   '@aeternity/aepp-components',
-  '@aeternity/aepp-sdk'
+  '@aeternity/aepp-sdk',
 ];
 
 // Set your credentials here for testing without a wallet

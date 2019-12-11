@@ -1,7 +1,7 @@
-import Aepp from '@aeternity/aepp-sdk/es/ae/aepp'
-import Util from './util'
-import identity from '../contracts/Idenitity.aes'
-import {Universal} from "@aeternity/aepp-sdk/es/ae/universal";
+import Aepp from '@aeternity/aepp-sdk/es/ae/aepp';
+import Util from './util';
+import identity from '../contracts/Idenitity.aes';
+import { Universal } from '@aeternity/aepp-sdk/es/ae/universal';
 
 const aeternity = {
   client: null,
@@ -9,7 +9,7 @@ const aeternity = {
   height: null,
   networkId: null,
   passive: false,
-  contractAddress: ''
+  contractAddress: '',
 };
 
 const timeout = async (promise) => {
@@ -18,7 +18,7 @@ const timeout = async (promise) => {
     new Promise(resolve =>
       setTimeout(() => {
         resolve('TIMEOUT');
-      }, 30000))
+      }, 30000)),
   ]);
 };
 
@@ -30,12 +30,12 @@ aeternity.initProvider = async () => {
       .catch(() => '0');
     aeternity.height = await aeternity.client.height();
     aeternity.networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
-    if(aeternity.contractAddress)
-      aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
+    if (aeternity.contractAddress)
+      aeternity.contract = await aeternity.client.getContractInstance(identity, { contractAddress: aeternity.contractAddress });
     return true;
   } catch (e) {
     console.error(e);
-    return false
+    return false;
   }
 };
 
@@ -96,8 +96,7 @@ aeternity.initClient = async () => {
 
 aeternity.verifyAddress = async () => {
   const currAddress = await aeternity.client.address();
-  return currAddress !== aeternity.address
+  return currAddress !== aeternity.address;
 };
 
-
-export default aeternity
+export default aeternity;

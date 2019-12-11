@@ -10,34 +10,34 @@
 
 <script>
 
-  import aeternity from './utils/aeternity.js'
+  import aeternity from './utils/aeternity.js';
 
   export default {
     name: 'app',
     methods: {
-      async checkAndReloadProvider() {
+      async checkAndReloadProvider () {
         if (!aeternity.address) return;
         const changesDetected = await aeternity.verifyAddress();
         if (changesDetected) this.$router.go();
-      }
+      },
     },
-    async created() {
+    async created () {
       try {
         // Bypass check if there is already an active wallet
         if (aeternity.hasActiveWallet())
-          return
+          return;
 
         // Otherwise init the aeternity sdk
         if (!(await aeternity.initClient()))
           throw new Error('Wallet init failed');
 
         // Constantly check if wallet is changed
-        setInterval(this.checkAndReloadProvider, 1000)
+        setInterval(this.checkAndReloadProvider, 1000);
       } catch (e) {
         console.error('Initializing Wallet Error', e);
       }
     }
-  }
+  };
 </script>
 
 <style scoped>
@@ -55,6 +55,7 @@
       display: flex;
       justify-content: center;
     }
+
     .content {
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
     }
