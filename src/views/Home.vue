@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Account</h1>
-    {{address}}
+    <span class="address">{{address}}</span>
     <h1>Balance</h1>
     {{balance}} AE
     <br>
@@ -29,16 +29,25 @@
         balance: null
       };
     },
+    methods: {
+      async loadData() {
+        console.log("RUNNING TESTS");
+        await aeternity.initClient();
 
-
-    async mounted() {
-      await aeternity.initClient();
-
-      if (aeternity.isTestnet() && aeternity.balance <= 5) {
-        await axios.post(`https://testnet.faucet.aepps.com/account/${aeternity.address}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).catch(console.error);
+        if (aeternity.isTestnet() && aeternity.balance <= 5) {
+          try {
+            await axios.post(`https://testnet.faucet.aepps.com/account/${aeternity.address}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).catch(console.error);
+          } catch (e) {
+            console.warn('Could not top up balance.');
+          }
+        }
+        this.address = aeternity.address;
+        this.balance = aeternity.balance;
       }
-      this.address = aeternity.address;
-      this.balance = aeternity.balance;
+    },
+
+    mounted() {
+      this.loadData()
     },
   };
 </script>

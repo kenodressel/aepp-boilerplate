@@ -3,7 +3,21 @@ const packagesToTranspile = [
   '@aeternity/aepp-sdk'
 ];
 
+// Set your credentials here for testing without a wallet
+/*
+
+process.env.PUBLIC_KEY = '';
+process.env.SECRET_KEY = '';
+ */
+
+const SDK = require('@aeternity/aepp-sdk');
+
+const keyPair = SDK.Crypto.generateKeyPair();
+process.env.PUBLIC_KEY = keyPair.publicKey;
+process.env.SECRET_KEY = keyPair.secretKey;
+
 module.exports = {
+  verbose: true,
   moduleFileExtensions: [
     'js',
     'json',
