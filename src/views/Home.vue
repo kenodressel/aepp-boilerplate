@@ -31,7 +31,6 @@
     },
     methods: {
       async loadData() {
-        console.log("RUNNING TESTS");
         await aeternity.initClient();
 
         if (aeternity.isTestnet() && aeternity.balance <= 5) {
