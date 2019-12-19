@@ -2,11 +2,7 @@ dist: xenial
 sudo: false
 
 language: node_js
-node_js: '10'
-
-env:
-  global:
-    - DIR=/home/travis/build/kenodressel/aepp-boilerplate
+node_js: '12'
 
 jobs:
   include:
