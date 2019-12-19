@@ -81,6 +81,20 @@ aeternity.isTestnet = () => {
  */
 aeternity.initClient = async () => {
   let result = true;
+
+  if(process && process.env && process.env.PRIVATE_KEY && process.env.PUBLIC_KEY) {
+    aeternity.client = await Universal({
+      url: 'https://sdk-testnet.aepps.com',
+      internalUrl: 'https://sdk-testnet.aepps.com',
+      compilerUrl: 'https://compiler.aepps.com',
+      keypair: {
+        publicKey: process.env.PUBLIC_KEY,
+        secretKey: process.env.PRIVATE_KEY
+      }
+    });
+    return await aeternity.initProvider();
+  }
+
   if (!aeternity.client) {
     try {
       aeternity.client = await aeternity.initMobileBaseAepp();
