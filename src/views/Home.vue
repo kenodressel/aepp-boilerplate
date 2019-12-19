@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>Account</h1>
-    {{address}}
+    <span class="address">{{address}}</span>
     <h1>Balance</h1>
-    {{balance}} AE
+    <span class="balance" v-show="balance">{{balance}}</span> AE
     <br>
     <br>
     <br>

@@ -1,0 +1,17 @@
+dist: xenial
+sudo: false
+
+language: node_js
+node_js: '10'
+
+env:
+  global:
+    - DIR=/home/travis/build/kenodressel/aepp-boilerplate
+
+jobs:
+  include:
+    - stage: aepp
+      script:
+        - npm install
+        - npm run test
+

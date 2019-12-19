@@ -4,7 +4,10 @@
   "scripts": {
     "build": "webpack --config ./webpack.prod.js --progress",
     "dev": "webpack-dev-server --config ./webpack.dev.js --verbose --progress",
-    "build:stats": "webpack --config ./webpack.prod.js  --profile --json > stats.json"
+    "build:stats": "webpack --config ./webpack.prod.js  --profile --json > stats.json",
+    "test:e2e": "cypress run",
+    "test:server": "PRIVATE_KEY=7c6e602a94f30e4ea7edabe4376314f69ba7eaa2f355ecedb339df847b6f0d80575f81ffb0a297b7725dc671da0b1769b1fc5cbe45385c7b5ad1fc2eaf1d609d PUBLIC_KEY=ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk webpack --config ./webpack.test.js --progress && serve ./dist -l 8081",
+    "test": "start-server-and-test test:server http://localhost:8081 test:e2e"
   },
   "license": "ISC",
   "dependencies": {
@@ -34,6 +37,7 @@
     "core-js": "^3.4.5",
     "css-loader": "^3.0.0",
     "cssnano": "^4.1.10",
+    "cypress": "^3.8.0",
     "favicons-webpack-plugin": "^1.0.2",
     "file-loader": "^5.0.2",
     "glob-all": "^3.1.0",
@@ -46,6 +50,8 @@
     "purgecss-webpack-plugin": "^1.6.0",
     "raw-loader": "^4.0.0",
     "sass-loader": "^8.0.0",
+    "serve": "^11.2.0",
+    "start-server-and-test": "^1.10.6",
     "tailwindcss": "^1.1.4",
     "vue-loader": "^15.7.2",
     "vue-style-loader": "^4.1.2",
