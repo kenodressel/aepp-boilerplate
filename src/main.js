@@ -1,20 +1,16 @@
-import './main.css'
+import './main.css';
 
-import '@aeternity/aepp-components/dist/aepp.fonts.css'
+import '@aeternity/aepp-components/dist/aepp.fonts.css';
 // Enable if using aeternity icons
 // import '@aeternity/aepp-components/dist/ae-icon/ae-icon.css'
 
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import App from './App.vue'
-import router from './router'
-
-
-Vue.use(VueRouter);
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
 
 Vue.config.productionTip = false;
 
-export default new Vue({
-  router: router,
-  render: h => h(App)
-}).$mount('#app')
+new Vue({
+  router,
+  render: h => h(App),
+}).$mount('#app');

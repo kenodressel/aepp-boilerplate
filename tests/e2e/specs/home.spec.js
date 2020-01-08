@@ -1,11 +1,10 @@
-describe('Home.vue', function () {
+describe('Home.vue', () => {
   it('Verifies wallet', () => {
     cy.visit('/');
 
-    cy.get('.address', {timeout: 15000}).should('contain', 'ak_');
+    cy.get('.address', { timeout: 15000 }).should('contain', 'ak_');
 
     cy.get('.balance').should('be.visible');
-
   });
   it('Verifies tailwind', () => {
     cy.get('.hidden').should('not.be.visible');
