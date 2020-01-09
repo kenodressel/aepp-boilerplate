@@ -32,7 +32,7 @@
 
 
     async mounted() {
-      await aeternity.initClient();
+      //await aeternity.initClient();
 
       if (aeternity.isTestnet() && aeternity.balance <= 5) {
         await axios.post(`https://testnet.faucet.aepps.com/account/${aeternity.address}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).catch(console.error);
