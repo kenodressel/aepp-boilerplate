@@ -22,9 +22,9 @@ const timeout = async promise => Promise.race([
 aeternity.initProvider = async () => {
   try {
     aeternity.address = await aeternity.client.address();
-    aeternity.balance = await aeternity.client.balance(aeternity.address).
-      then(balance => `${Util.atomsToAe(balance)}`.replace(',', '')).
-      catch(() => '0');
+    aeternity.balance = await aeternity.client.balance(aeternity.address)
+      .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
+      .catch(() => '0');
     aeternity.height = await aeternity.client.height();
     aeternity.networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
     if (aeternity.contractAddress) {
@@ -33,6 +33,7 @@ aeternity.initProvider = async () => {
     }
     return true;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     return false;
   }
@@ -43,6 +44,7 @@ aeternity.initMobileBaseAepp = async () => {
     if (window.parent === window) return false;
     return await timeout(Aepp());
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.warn('Base Aepp init failed');
     return false;
   }
@@ -84,7 +86,7 @@ aeternity.initClient = async () => {
         secretKey: process.env.PRIVATE_KEY,
       },
     });
-    return await aeternity.initProvider();
+    return aeternity.initProvider();
   }
 
   if (!aeternity.client) {
@@ -92,6 +94,7 @@ aeternity.initClient = async () => {
       aeternity.client = await aeternity.initMobileBaseAepp();
       result = await aeternity.initProvider();
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e);
       result = false;
     }
