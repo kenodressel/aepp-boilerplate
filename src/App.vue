@@ -11,6 +11,7 @@
 <script>
 
   import aeternity from './utils/aeternity.js'
+  import {wallet} from './utils/walletSearch.js'
 
   export default {
     name: 'app',
@@ -22,6 +23,11 @@
       }
     },
     async created() {
+
+      await wallet.init();
+
+      return
+
       try {
         // Bypass check if there is already an active wallet
         if (aeternity.hasActiveWallet())
