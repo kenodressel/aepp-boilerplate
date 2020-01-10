@@ -10,7 +10,7 @@
     <h2>Components Test</h2>
     <span class="hidden">If you see this, tailwindcss is not working</span>
     <div class="mt-2 ml-2">
-      <ae-button face="round" fill="primary"> Primary Button </ae-button>
+      <ae-button face="round" fill="primary"> Primary Button</ae-button>
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@
 
   export default {
     name: 'Home',
-    components: { AeButton },
+    components: {AeButton},
     data() {
       return {
         address: null,
@@ -30,13 +30,20 @@
       };
     },
 
-
     async mounted() {
+      // init the client once the component is loaded. This should be done in every view.
       await aeternity.initClient();
 
-      if (aeternity.isTestnet() && aeternity.balance <= 5) {
-        await axios.post(`https://testnet.faucet.aepps.com/account/${aeternity.address}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).catch(console.error);
+      // Use the faucet to stock up the account with some balance. This is especially helpful for users
+      // who are new to the eco system and are testing your aepp.
+      if (!aeternity.isMainnet() && aeternity.balance <= 5) {
+        await axios.post(
+          `https://testnet.faucet.aepps.com/account/${aeternity.address}`,
+          {},
+          {headers: {'content-type': 'application/x-www-form-urlencoded'}})
+          .catch(console.error);
       }
+      // Display the values
       this.address = aeternity.address;
       this.balance = aeternity.balance;
     },
