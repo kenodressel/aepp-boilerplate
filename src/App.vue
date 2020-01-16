@@ -1,8 +1,11 @@
 <template>
   <div id="app" class="min-h-screen">
     <div class="content min-h-screen max-w-desktop">
-      <div class="min-h-screen wrapper" ref="wrapper">
+      <div class="min-h-screen wrapper" ref="wrapper" v-if="foundWallet">
         <router-view></router-view>
+      </div>
+      <div v-else>
+        Searching for wallet...
       </div>
     </div>
   </div>
@@ -15,6 +18,11 @@
 
   export default {
     name: 'app',
+    data() {
+      return {
+        foundWallet: false
+      }
+    },
     methods: {
       async checkAndReloadProvider() {
         if (!aeternity.address) return;
@@ -24,7 +32,9 @@
     },
     async created() {
 
-      await wallet.init();
+      await wallet.init(() => {
+        this.foundWallet = true;
+      });
 
       return
 

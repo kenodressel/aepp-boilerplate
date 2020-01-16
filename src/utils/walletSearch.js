@@ -4,8 +4,8 @@ import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wa
 import aeternity from './aeternity';
 
 // Send wallet connection info to Aepp through content script
-const NODE_URL = 'https://sdk-testnet.aepps.com/';
-const NODE_INTERNAL_URL = 'https://sdk-testnet.aepps.com/';
+const NODE_URL = 'https://sdk-testnet.aepps.com';
+const NODE_INTERNAL_URL = 'https://sdk-testnet.aepps.com';
 
 export const wallet = {
   client: null,
@@ -30,7 +30,7 @@ export const wallet = {
     document.body.appendChild(iframe);
     return iframe.contentWindow;
   },
-  async scanForWallets () {
+  async scanForWallets (successCallback) {
     const scannerConnection = await BrowserWindowMessageConnection({
       connectionInfo: { id: 'spy' },
     });
@@ -41,11 +41,12 @@ export const wallet = {
       await this.client.subscribeAddress('subscribe', 'current');
       aeternity.client = this.client;
       await aeternity.initProvider();
+      successCallback();
     };
 
     detector.scan(handleWallets.bind(this));
   },
-  async init () {
+  async init (successCallback) {
     // Open iframe with Wallet if run in top window
     window !== window.parent || await this.getReverseWindow();
     //
@@ -54,6 +55,6 @@ export const wallet = {
       nodes: [{ name: 'test-net', instance: await Node({ url: NODE_URL, internalUrl: NODE_INTERNAL_URL }) }],
     });
     this.height = await this.client.height();
-    await this.scanForWallets();
+    await this.scanForWallets(successCallback);
   },
 };
