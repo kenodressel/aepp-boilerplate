@@ -12,6 +12,7 @@ jobs:
   include:
     - stage: aepp
       script:
+        - npx cypress install
         - npm install
         - npm run test
 
