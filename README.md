@@ -60,9 +60,9 @@ this file. We will update this file in the future as new wallets appear.
 [AEX-2](https://github.com/aeternity/AEXs/blob/master/AEXS/aex-2.md) is an extension proposal to standardize the wallet to
 aepp communication. As of this writing it has been withdrawn but is still the reference implementation provided by the js-sdk.
 Since we aim to make this boilerplate as universally connective as possible, we also implemented the client side protocol
-for this standard in the file `src/utils/walletDiscovery.js`. It is up to the developer to decide if it should be activated and used.
+for this standard in the file `src/utils/walletSearch.js`. It is up to the developer to decide if it should be activated and used.
 To active simply use call the `init()` function in `App.vue`. Currently only either the wallet discovery provided in `aeternity.js`
-or the wallet discovery from `walletDiscovery.js` can be active. This might be changed in the future or if a new standard emerges.
+or the wallet discovery from `walletSearch.js` can be active. This might be changed in the future or if a new standard emerges.
 
 #### SDK and aepp-components integration
 
