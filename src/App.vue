@@ -32,21 +32,23 @@
     },
     async created() {
 
-      await wallet.init(() => {
+      /*
+      Enable for AEX-2
+      return await wallet.init(() => {
         this.foundWallet = true;
       });
-
-      return
+       */
 
       try {
         // Bypass check if there is already an active wallet
         if (aeternity.hasActiveWallet())
-          return
+          return this.foundWallet = true;
 
         // Otherwise init the aeternity sdk
         if (!(await aeternity.initClient()))
           throw new Error('Wallet init failed');
 
+        this.foundWallet = true;
         // Constantly check if wallet is changed
         setInterval(this.checkAndReloadProvider, 1000)
       } catch (e) {
