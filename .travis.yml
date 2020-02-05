@@ -4,10 +4,15 @@ sudo: false
 language: node_js
 node_js: '12'
 
+cache:
+  directories:
+    - /home/travis/.cache/Cypress
+
 jobs:
   include:
     - stage: aepp
       script:
+        - npx cypress install
         - npm install
         - npm run test
 

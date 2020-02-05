@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="min-h-screen">
     <div class="content min-h-screen max-w-desktop">
-      <div class="min-h-screen wrapper" ref="wrapper" v-if="foundWallet">
+    <div class="min-h-screen wrapper" ref="wrapper" v-if="foundWallet">
         <router-view></router-view>
       </div>
       <div v-else>
@@ -27,6 +27,7 @@
       async checkAndReloadProvider() {
         if (!aeternity.address) return;
         const changesDetected = await aeternity.verifyAddress();
+        // Reload the page, if changes have been detected.
         if (changesDetected) this.$router.go();
       }
     },
@@ -43,10 +44,9 @@
         // Bypass check if there is already an active wallet
         if (aeternity.hasActiveWallet())
           return this.foundWallet = true;
-
         // Otherwise init the aeternity sdk
         if (!(await aeternity.initClient()))
-          throw new Error('Wallet init failed');
+          return console.error('Wallet init failed');
 
         this.foundWallet = true;
         // Constantly check if wallet is changed
