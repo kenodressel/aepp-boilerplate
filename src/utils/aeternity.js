@@ -69,6 +69,7 @@ aeternity.initMobileBaseAepp = async () => {
 aeternity.initStaticClient = async () => {
   // TESTNET
   return Universal({
+    compilerUrl: 'https://sdk-testnet.aepps.com',
     nodes: [
       {
         name: 'testnet',
@@ -76,13 +77,13 @@ aeternity.initStaticClient = async () => {
           url: 'https://sdk-testnet.aepps.com',
           internalUrl: 'https://sdk-testnet.aepps.com',
         }),
-        compilerUrl: 'https://sdk-testnet.aepps.com',
         networkId: 'ae_uat',
       }],
   });
   // MAINNET
   /*
   return Universal({
+    compilerUrl: 'https://sdk-mainnet.aepps.com',
     nodes: [
       {
         name: 'mainnet',
@@ -90,7 +91,6 @@ aeternity.initStaticClient = async () => {
           url: 'https://sdk-mainnet.aepps.com',
           internalUrl: 'https://sdk-mainnet.aepps.com',
         }),
-        compilerUrl: 'https://sdk-mainnet.aepps.com',
         networkId: 'ae_mainnet'
       }],
   });
