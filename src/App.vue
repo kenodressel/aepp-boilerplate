@@ -23,37 +23,11 @@
         foundWallet: false
       }
     },
-    methods: {
-      async checkAndReloadProvider() {
-        if (!aeternity.address) return;
-        const changesDetected = await aeternity.verifyAddress();
-        // Reload the page, if changes have been detected.
-        if (changesDetected) this.$router.go();
-      }
-    },
     async created() {
-
-      /*
-      Enable for AEX-2
       return await wallet.init(() => {
+          console.log("foundWallet");
         this.foundWallet = true;
       });
-       */
-
-      try {
-        // Bypass check if there is already an active wallet
-        if (aeternity.hasActiveWallet())
-          return this.foundWallet = true;
-        // Otherwise init the aeternity sdk
-        if (!(await aeternity.initClient()))
-          return console.error('Wallet init failed');
-
-        this.foundWallet = true;
-        // Constantly check if wallet is changed
-        setInterval(this.checkAndReloadProvider, 1000)
-      } catch (e) {
-        console.error('Initializing Wallet Error', e);
-      }
     }
   }
 </script>

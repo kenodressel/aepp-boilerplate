@@ -33,6 +33,7 @@ const timeout = async (promise) => {
  */
 aeternity.initProvider = async () => {
   try {
+
     aeternity.address = await aeternity.client.address();
     aeternity.balance = await aeternity.client.balance(aeternity.address)
       .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
@@ -47,19 +48,6 @@ aeternity.initProvider = async () => {
     return false;
   }
 };
-/**
- * Wait for the base-aepp to to load.
- * @returns {Promise<boolean|unknown>}
- */
-aeternity.initMobileBaseAepp = async () => {
-  try {
-    if (window.parent === window) return false;
-    return await timeout(Aepp());
-  } catch (e) {
-    console.warn('Base Aepp init failed');
-    return false;
-  }
-};
 
 /**
  * Initialize a static client, mainnet or testnet
@@ -67,35 +55,17 @@ aeternity.initMobileBaseAepp = async () => {
  * @returns {Promise<*>}
  */
 aeternity.initStaticClient = async () => {
-  // TESTNET
   return Universal({
-    compilerUrl: 'https://sdk-testnet.aepps.com',
-    nodes: [
-      {
-        name: 'testnet',
-        instance: await Node({
-          url: 'https://sdk-testnet.aepps.com',
-          internalUrl: 'https://sdk-testnet.aepps.com',
-        }),
-        networkId: 'ae_uat',
-      }],
-  });
-  // MAINNET
-  /*
-  return Universal({
-    compilerUrl: 'https://sdk-mainnet.aepps.com',
     nodes: [
       {
         name: 'mainnet',
         instance: await Node({
           url: 'https://sdk-mainnet.aepps.com',
           internalUrl: 'https://sdk-mainnet.aepps.com',
-        }),
-        networkId: 'ae_mainnet'
+        })
       }],
+    compilerUrl: 'https://latest.compiler.aepps.com'
   });
-  */
-
 };
 
 /**
@@ -122,22 +92,11 @@ aeternity.isMainnet = () => {
 aeternity.initClient = async () => {
   let result = true;
 
-  if (process && process.env && process.env.PRIVATE_KEY && process.env.PUBLIC_KEY) {
-    aeternity.client = await Universal({
-      nodes: [{ name: 'testnet', instance: await Node({ url: 'https://sdk-testnet.aepps.com', internalUrl: 'https://sdk-testnet.aepps.com' }) }],
-      compilerUrl: 'https://sdk-testnet.aepps.com',
-      accounts: [
-        MemoryAccount({ keypair: { secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY } }),
-      ],
-      address: process.env.PUBLIC_KEY,
-      networkId: 'ae_uat',
-    });
-    return await aeternity.initProvider();
-  }
 
   if (!aeternity.client) {
     try {
-      aeternity.client = await aeternity.initMobileBaseAepp();
+      aeternity.client = await aeternity.initStaticClient();
+      console.log(aeternity.client);
       result = await aeternity.initProvider();
     } catch (e) {
       console.error(e);

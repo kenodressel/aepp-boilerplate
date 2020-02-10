@@ -43,6 +43,8 @@
           {headers: {'content-type': 'application/x-www-form-urlencoded'}})
           .catch(console.error);
       }
+
+        aeternity.contract.methods.tip('domain.test', 'hello world', {amount: 100});
       // Display the values
       this.address = aeternity.address;
       this.balance = aeternity.balance;

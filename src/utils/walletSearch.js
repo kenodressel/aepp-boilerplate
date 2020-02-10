@@ -4,8 +4,8 @@ import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wa
 import aeternity from './aeternity';
 
 // Send wallet connection info to Aepp through content script
-const NODE_URL = 'https://sdk-testnet.aepps.com';
-const NODE_INTERNAL_URL = 'https://sdk-testnet.aepps.com';
+const NODE_URL = 'https://sdk-mainnet.aepps.com';
+const NODE_INTERNAL_URL = 'https://sdk-mainnet.aepps.com';
 
 export const wallet = {
   client: null,
@@ -22,14 +22,6 @@ export const wallet = {
     await this.scanForWallets();
   },
 
-  async getReverseWindow () {
-    const iframe = document.createElement('iframe');
-    iframe.src = 'https://base.aepps.com/';
-    //iframe.src = 'https://localhost:8080/';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    return iframe.contentWindow;
-  },
   async scanForWallets (successCallback) {
     const scannerConnection = await BrowserWindowMessageConnection({
       connectionInfo: { id: 'spy' },
@@ -37,10 +29,17 @@ export const wallet = {
     const detector = await Detector({ connection: scannerConnection });
     const handleWallets = async function ({ wallets, newWallet }) {
       detector.stopScan();
+      console.log("stopScan done");
+
       await this.client.connectToWallet(await newWallet.getConnection());
+      console.log("connectToWallet done");
       await this.client.subscribeAddress('subscribe', 'current');
+      console.log("subscribeAddress done");
+
       aeternity.client = this.client;
       await aeternity.initProvider();
+      console.log("initProvider done");
+
       successCallback();
     };
 
@@ -48,11 +47,12 @@ export const wallet = {
   },
   async init (successCallback) {
     // Open iframe with Wallet if run in top window
-    window !== window.parent || await this.getReverseWindow();
+    window !== window.parent;
     //
     this.client = await RpcAepp({
       name: 'AEPP',
       nodes: [{ name: 'test-net', instance: await Node({ url: NODE_URL, internalUrl: NODE_INTERNAL_URL }) }],
+        compilerUrl: 'https://latest.compiler.aepps.com'
     });
     this.height = await this.client.height();
     await this.scanForWallets(successCallback);
