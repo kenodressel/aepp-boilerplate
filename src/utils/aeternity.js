@@ -69,7 +69,7 @@ aeternity.initMobileBaseAepp = async () => {
 aeternity.initStaticClient = async () => {
   // TESTNET
   return Universal({
-    compilerUrl: 'https://sdk-testnet.aepps.com',
+    compilerUrl: 'https://compiler.aepps.com',
     nodes: [
       {
         name: 'testnet',
@@ -125,7 +125,7 @@ aeternity.initClient = async () => {
   if (process && process.env && process.env.PRIVATE_KEY && process.env.PUBLIC_KEY) {
     aeternity.client = await Universal({
       nodes: [{ name: 'testnet', instance: await Node({ url: 'https://sdk-testnet.aepps.com', internalUrl: 'https://sdk-testnet.aepps.com' }) }],
-      compilerUrl: 'https://sdk-testnet.aepps.com',
+      compilerUrl: 'https://compiler.aepps.com',
       accounts: [
         MemoryAccount({ keypair: { secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY } }),
       ],
