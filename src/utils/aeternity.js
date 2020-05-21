@@ -1,13 +1,14 @@
-import Util from './util';
 import identity from '../contracts/Idenitity.aes';
 import { Node, Universal, Aepp, MemoryAccount } from '@aeternity/aepp-sdk/es';
 
+const TESTNET_URL = 'https://testnet.aeternity.io';
+const MAINNET_URL = 'https://mainnet.aeternity.io';
+const COMPILER_URL = 'https://compiler.aepps.com';
+
 const aeternity = {
   client: null,
-  address: null,
-  height: null,
   networkId: null,
-  passive: false,
+  static: false,
   contractAddress: '',
 };
 /**
@@ -33,11 +34,6 @@ const timeout = async (promise) => {
  */
 aeternity.initProvider = async () => {
   try {
-    aeternity.address = await aeternity.client.address();
-    aeternity.balance = await aeternity.client.balance(aeternity.address)
-      .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
-      .catch(() => '0');
-    aeternity.height = await aeternity.client.height();
     aeternity.networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
     if(aeternity.contractAddress)
       aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
@@ -47,6 +43,7 @@ aeternity.initProvider = async () => {
     return false;
   }
 };
+
 /**
  * Wait for the base-aepp to to load.
  * @returns {Promise<boolean|unknown>}
@@ -67,31 +64,29 @@ aeternity.initMobileBaseAepp = async () => {
  * @returns {Promise<*>}
  */
 aeternity.initStaticClient = async () => {
+  aeternity.static = true;
+
   // TESTNET
   return Universal({
-    compilerUrl: 'https://compiler.aepps.com',
+    compilerUrl: COMPILER_URL,
     nodes: [
       {
         name: 'testnet',
         instance: await Node({
-          url: 'https://sdk-testnet.aepps.com',
-          internalUrl: 'https://sdk-testnet.aepps.com',
+          url: TESTNET_URL,
         }),
-        networkId: 'ae_uat',
       }],
   });
   // MAINNET
   /*
   return Universal({
-    compilerUrl: 'https://sdk-mainnet.aepps.com',
+    compilerUrl: COMPILER_URL,
     nodes: [
       {
         name: 'mainnet',
         instance: await Node({
-          url: 'https://sdk-mainnet.aepps.com',
-          internalUrl: 'https://sdk-mainnet.aepps.com',
+          url: MAINNET_URL,
         }),
-        networkId: 'ae_mainnet'
       }],
   });
   */
@@ -124,13 +119,11 @@ aeternity.initClient = async () => {
 
   if (process && process.env && process.env.PRIVATE_KEY && process.env.PUBLIC_KEY) {
     aeternity.client = await Universal({
-      nodes: [{ name: 'testnet', instance: await Node({ url: 'https://sdk-testnet.aepps.com', internalUrl: 'https://sdk-testnet.aepps.com' }) }],
-      compilerUrl: 'https://compiler.aepps.com',
+      nodes: [{ name: 'testnet', instance: await Node({ url: TESTNET_URL }) }],
+      compilerUrl: COMPILER_URL,
       accounts: [
         MemoryAccount({ keypair: { secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY } }),
       ],
-      address: process.env.PUBLIC_KEY,
-      networkId: 'ae_uat',
     });
     return await aeternity.initProvider();
   }
@@ -138,6 +131,7 @@ aeternity.initClient = async () => {
   if (!aeternity.client) {
     try {
       aeternity.client = await aeternity.initMobileBaseAepp();
+      if(!aeternity.client) aeternity.client = await aeternity.initStaticClient();
       result = await aeternity.initProvider();
     } catch (e) {
       console.error(e);

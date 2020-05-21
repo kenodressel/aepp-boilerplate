@@ -4,9 +4,8 @@ import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wa
 import aeternity from './aeternity';
 
 // Send wallet connection info to Aepp through content script
-const NODE_URL = 'https://sdk-testnet.aepps.com';
-const NODE_INTERNAL_URL = 'https://sdk-testnet.aepps.com';
-const COMPILER_URL = 'https://compiler.aepps.com';
+const NODE_URL = 'https://testnet.aeternity.io';
+const COMPILER_URL = 'https://latest.compiler.aepps.com';
 
 export const wallet = {
   client: null,
@@ -50,10 +49,10 @@ export const wallet = {
   async init (successCallback) {
     // Open iframe with Wallet if run in top window
     window !== window.parent || await this.getReverseWindow();
-    //
+
     this.client = await RpcAepp({
       name: 'AEPP',
-      nodes: [{ name: 'test-net', instance: await Node({ url: NODE_URL, internalUrl: NODE_INTERNAL_URL }) }],
+      nodes: [{ name: 'testnet', instance: await Node({ url: NODE_URL }) }],
       compilerUrl: COMPILER_URL
     });
     this.height = await this.client.height();
