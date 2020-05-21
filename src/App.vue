@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="min-h-screen">
     <div class="content min-h-screen max-w-desktop">
-    <div class="min-h-screen wrapper" ref="wrapper" v-if="foundWallet">
+      <div class="min-h-screen wrapper" ref="wrapper" v-if="foundWallet">
         <router-view></router-view>
       </div>
       <div v-else>
@@ -32,29 +32,32 @@
       }
     },
     async created() {
+      //First try AEX-2
+      await Promise.race([
+        new Promise((resolve) => wallet.init(() => {
+          this.foundWallet = true;
+          resolve();
+        })),
+        new Promise((resolve) => setTimeout(resolve, 3000, 'TIMEOUT')),
+      ]).catch(console.error);
 
-      /*
-      //Enable for AEX-2
-      return await wallet.init(() => {
-        this.foundWallet = true;
-      });
-       */
+      //Otherwise try for Base-Aepp
+      if (!this.foundWallet) {
+        try {
+          // Bypass check if there is already an active wallet
+          if (aeternity.hasActiveWallet())
+            return this.foundWallet = true;
 
-      //Enable for Base-Aepp
-      try {
-        // Bypass check if there is already an active wallet
-        if (aeternity.hasActiveWallet())
-          return this.foundWallet = true;
+          // Otherwise init the aeternity sdk
+          if (!(await aeternity.initClient()))
+            return console.error('Wallet init failed');
 
-        // Otherwise init the aeternity sdk
-        if (!(await aeternity.initClient()))
-          return console.error('Wallet init failed');
-
-        this.foundWallet = true;
-        // Constantly check if wallet is changed
-        setInterval(this.checkAndReloadProvider, 1000)
-      } catch (e) {
-        console.error('Initializing Wallet Error', e);
+          this.foundWallet = true;
+          // Constantly check if wallet is changed
+          setInterval(this.checkAndReloadProvider, 1000)
+        } catch (e) {
+          console.error('Initializing Wallet Error', e);
+        }
       }
     }
   }
@@ -75,6 +78,7 @@
       display: flex;
       justify-content: center;
     }
+
     .content {
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
     }
