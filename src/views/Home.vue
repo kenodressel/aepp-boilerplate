@@ -1,11 +1,9 @@
 <template>
   <div>
-    <h1>Account</h1>
-    <span class="address">{{address}}</span>
-    <h1>Balance</h1>
-    <span class="balance" v-show="balance">{{balance}}</span> AE
-    <br>
-    <br>
+    <span v-if="networkId">Connected: {{networkId}}</span>
+    <div v-if="address">Account: {{address}}</div>
+    <div v-else>No Account set</div>
+    <div v-if="balance">Balance: {{balance}} AE</div>
     <br>
     <h2>Components Test</h2>
     <span class="hidden">If you see this, tailwindcss is not working</span>
@@ -19,12 +17,14 @@
   import aeternity from '../utils/aeternity'
   import axios from 'axios'
   import {AeButton} from '@aeternity/aepp-components/src/components'
+  import Util from "../utils/util";
 
   export default {
     name: 'Home',
     components: {AeButton},
     data() {
       return {
+        networkId: null,
         address: null,
         balance: null
       };
@@ -33,19 +33,25 @@
     async mounted() {
       // init the client once the component is loaded. This should be done in every view.
       await aeternity.initClient();
+      this.networkId = aeternity.networkId;
 
-      // Use the faucet to stock up the account with some balance. This is especially helpful for users
-      // who are new to the eco system and are testing your aepp.
-      if (!aeternity.isMainnet() && aeternity.balance <= 5) {
-        await axios.post(
-          `https://testnet.faucet.aepps.com/account/${aeternity.address}`,
-          {},
-          {headers: {'content-type': 'application/x-www-form-urlencoded'}})
-          .catch(console.error);
+      // Display the values if not static client
+      if (!aeternity.static) {
+        this.address = await aeternity.client.address()
+        this.balance = await aeternity.client.balance(this.address)
+          .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
+          .catch(() => '0');
+
+        // Use the faucet to stock up the account with some balance. This is especially helpful for users
+        // who are new to the eco system and are testing your aepp.
+        if (!aeternity.isMainnet() && this.balance <= 5) {
+          await axios.post(
+            `https://testnet.faucet.aepps.com/account/${this.address}`,
+            {},
+            {headers: {'content-type': 'application/x-www-form-urlencoded'}})
+            .catch(console.error);
+        }
       }
-      // Display the values
-      this.address = aeternity.address;
-      this.balance = aeternity.balance;
     },
   };
 </script>
