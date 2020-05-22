@@ -4,7 +4,8 @@ import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wa
 import aeternity from './aeternity';
 
 // Send wallet connection info to Aepp through content script
-const NODE_URL = 'https://testnet.aeternity.io';
+const TESTNET_URL = 'https://testnet.aeternity.io';
+const MAINNET_URL = 'https://mainnet.aeternity.io';
 const COMPILER_URL = 'https://latest.compiler.aepps.com';
 
 export const wallet = {
@@ -37,7 +38,8 @@ export const wallet = {
     const detector = await Detector({ connection: scannerConnection });
     const handleWallets = async function ({ wallets, newWallet }) {
       detector.stopScan();
-      await this.client.connectToWallet(await newWallet.getConnection());
+      const connected = await this.client.connectToWallet(await newWallet.getConnection());
+      this.client.selectNode(connected.networkId); // needs to be defined as node in RpcAepp
       await this.client.subscribeAddress('subscribe', 'current');
       aeternity.client = this.client;
       await aeternity.initProvider();
@@ -52,9 +54,13 @@ export const wallet = {
 
     this.client = await RpcAepp({
       name: 'AEPP',
-      nodes: [{ name: 'testnet', instance: await Node({ url: NODE_URL }) }],
+      nodes: [
+        {name: 'ae_uat', instance: await Node({url: TESTNET_URL})},
+        {name: 'ae_mainnet', instance: await Node({url: MAINNET_URL})}
+      ],
       compilerUrl: COMPILER_URL
     });
+
     this.height = await this.client.height();
     await this.scanForWallets(successCallback);
   },
