@@ -1,5 +1,6 @@
 import identity from '../contracts/Idenitity.aes';
-import { Node, Universal, Aepp, MemoryAccount } from '@aeternity/aepp-sdk/es';
+import {Node, Universal, Aepp, MemoryAccount} from '@aeternity/aepp-sdk/es';
+import {EventBus} from './eventBus';
 
 const TESTNET_URL = 'https://testnet.aeternity.io';
 const MAINNET_URL = 'https://mainnet.aeternity.io';
@@ -34,9 +35,12 @@ const timeout = async (promise) => {
  */
 aeternity.initProvider = async () => {
   try {
-    aeternity.networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
-    if(aeternity.contractAddress)
+    const networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
+    const changedNetwork = aeternity.networkId !== networkId;
+    aeternity.networkId = networkId
+    if (aeternity.contractAddress)
       aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
+    if (changedNetwork) EventBus.$emit('networkChange');
     return true;
   } catch (e) {
     console.error(e);
@@ -119,10 +123,10 @@ aeternity.initClient = async () => {
 
   if (process && process.env && process.env.PRIVATE_KEY && process.env.PUBLIC_KEY) {
     aeternity.client = await Universal({
-      nodes: [{ name: 'testnet', instance: await Node({ url: TESTNET_URL }) }],
+      nodes: [{name: 'testnet', instance: await Node({url: TESTNET_URL})}],
       compilerUrl: COMPILER_URL,
       accounts: [
-        MemoryAccount({ keypair: { secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY } }),
+        MemoryAccount({keypair: {secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY}}),
       ],
     });
     return await aeternity.initProvider();
@@ -131,7 +135,7 @@ aeternity.initClient = async () => {
   if (!aeternity.client) {
     try {
       aeternity.client = await aeternity.initMobileBaseAepp();
-      if(!aeternity.client) aeternity.client = await aeternity.initStaticClient();
+      if (!aeternity.client) aeternity.client = await aeternity.initStaticClient();
       result = await aeternity.initProvider();
     } catch (e) {
       console.error(e);
