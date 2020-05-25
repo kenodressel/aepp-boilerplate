@@ -1,9 +1,9 @@
 <template>
   <div>
     <span v-if="networkId">Connected: {{networkId}}</span>
-    <div v-if="address">Account: {{address}}</div>
+    <div v-if="address" class="address">Account: {{address}}</div>
     <div v-else>No Account set</div>
-    <div v-if="balance">Balance: {{balance}} AE</div>
+    <div v-if="balance" class="balance">Balance: {{balance}} AE</div>
     <br>
     <h2>Components Test</h2>
     <span class="hidden">If you see this, tailwindcss is not working</span>
@@ -40,9 +40,6 @@
           this.balance = await aeternity.client.balance(this.address)
             .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
             .catch(() => '0');
-
-          //console.log("spend", aeternity.client)
-          //await aeternity.client.spend(100000, this.address).catch(console.error); //TODO wait for sdk fix, yields Unsupported Network
 
           // Use the faucet to stock up the account with some balance. This is especially helpful for users
           // who are new to the eco system and are testing your aepp.
