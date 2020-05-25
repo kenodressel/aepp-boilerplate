@@ -39,7 +39,7 @@ export const wallet = {
     const handleWallets = async function ({ wallets, newWallet }) {
       detector.stopScan();
       const connected = await this.client.connectToWallet(await newWallet.getConnection());
-      this.client.selectNode(connected.networkId); // needs to be defined as node in RpcAepp
+      this.client.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
       await this.client.subscribeAddress('subscribe', 'current');
       aeternity.client = this.client;
       await aeternity.initProvider();
@@ -58,7 +58,11 @@ export const wallet = {
         {name: 'ae_uat', instance: await Node({url: TESTNET_URL})},
         {name: 'ae_mainnet', instance: await Node({url: MAINNET_URL})}
       ],
-      compilerUrl: COMPILER_URL
+      compilerUrl: COMPILER_URL,
+      onNetworkChange (params) {
+        this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
+        aeternity.initProvider();
+      }
     });
 
     this.height = await this.client.height();
