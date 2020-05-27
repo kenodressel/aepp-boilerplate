@@ -62,6 +62,9 @@ export const wallet = {
       onNetworkChange (params) {
         this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
         aeternity.initProvider();
+      },
+      onAddressChange(addresses) {
+        console.log("onAddressChange", addresses)
       }
     });
 
