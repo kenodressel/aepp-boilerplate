@@ -12,7 +12,6 @@
 </template>
 
 <script>
-
   import aeternity from './utils/aeternity.js'
   import {wallet} from './utils/walletSearch.js'
 
@@ -23,16 +22,7 @@
         foundWallet: false
       }
     },
-    methods: {
-      async checkAndReloadProvider() {
-        if (!aeternity.address) return;
-        const changesDetected = await aeternity.verifyAddress();
-        // Reload the page, if changes have been detected.
-        if (changesDetected) this.$router.go();
-      }
-    },
     async created() {
-      //First try AEX-2
       await Promise.race([
         new Promise((resolve) => wallet.init(() => {
           this.foundWallet = true;
@@ -41,23 +31,10 @@
         new Promise((resolve) => setTimeout(resolve, 3000, 'TIMEOUT')),
       ]).catch(console.error);
 
-      //Otherwise try for Base-Aepp
-      if (!this.foundWallet) {
-        try {
-          // Bypass check if there is already an active wallet
-          if (aeternity.hasActiveWallet())
-            return this.foundWallet = true;
-
-          // Otherwise init the aeternity sdk
-          if (!(await aeternity.initClient()))
-            return console.error('Wallet init failed');
-
-          this.foundWallet = true;
-          // Constantly check if wallet is changed
-          setInterval(this.checkAndReloadProvider, 1000)
-        } catch (e) {
-          console.error('Initializing Wallet Error', e);
-        }
+      if (await aeternity.initClient()) {
+        this.foundWallet = true;
+      } else {
+        console.error('Wallet init failed');
       }
     }
   }
