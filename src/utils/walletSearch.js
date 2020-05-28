@@ -2,6 +2,7 @@ import { RpcAepp, Node } from '@aeternity/aepp-sdk/es';
 import Detector from '@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector';
 import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message';
 import aeternity from './aeternity';
+import {EventBus} from "./eventBus";
 
 // Send wallet connection info to Aepp through content script
 const TESTNET_URL = 'https://testnet.aeternity.io';
@@ -64,7 +65,7 @@ export const wallet = {
         aeternity.initProvider();
       },
       onAddressChange(addresses) {
-        console.log("onAddressChange", addresses)
+        EventBus.$emit('addressChange');
       }
     });
 
