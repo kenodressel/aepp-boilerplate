@@ -40,9 +40,11 @@ export const wallet = {
     const handleWallets = async function ({ wallets, newWallet }) {
       detector.stopScan();
       const connected = await this.client.connectToWallet(await newWallet.getConnection());
-      this.client.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
+      // TODO re-enable once fixed
+      //this.client.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
       await this.client.subscribeAddress('subscribe', 'current');
       aeternity.client = this.client;
+      aeternity.static = false;
       await aeternity.initProvider();
       successCallback();
     };
@@ -51,13 +53,13 @@ export const wallet = {
   },
   async init (successCallback) {
     // Open iframe with Wallet if run in top window
-    window !== window.parent || await this.getReverseWindow();
+    // window !== window.parent || await this.getReverseWindow();
 
     this.client = await RpcAepp({
       name: 'AEPP',
       nodes: [
-        {name: 'ae_uat', instance: await Node({url: TESTNET_URL})},
-        {name: 'ae_mainnet', instance: await Node({url: MAINNET_URL})}
+        {name: 'ae_mainnet', instance: await Node({url: MAINNET_URL})},
+        {name: 'ae_uat', instance: await Node({url: TESTNET_URL})}
       ],
       compilerUrl: COMPILER_URL,
       onNetworkChange (params) {
