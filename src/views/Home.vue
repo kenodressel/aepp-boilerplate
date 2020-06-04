@@ -54,10 +54,10 @@
       }
     },
     async mounted() {
-      // init the client once the component is loaded. This should be done in every view.
-      await aeternity.initClient();
       EventBus.$on('networkChange', this.loadData);
       EventBus.$on('addressChange', this.loadData);
+      // init the client once the component is loaded. This should be done in every view.
+      await aeternity.initClient();
       this.loadData();
     },
   };

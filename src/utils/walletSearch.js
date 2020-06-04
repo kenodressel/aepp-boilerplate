@@ -40,8 +40,7 @@ export const wallet = {
     const handleWallets = async function ({ wallets, newWallet }) {
       detector.stopScan();
       const connected = await this.client.connectToWallet(await newWallet.getConnection());
-      // TODO re-enable once fixed
-      //this.client.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
+      this.client.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
       await this.client.subscribeAddress('subscribe', 'current');
       aeternity.client = this.client;
       aeternity.static = false;
