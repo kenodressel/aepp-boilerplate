@@ -10,7 +10,7 @@ const COMPILER_URL = 'https://compiler.aepps.com';
 const aeternity = {
   client: null,
   networkId: null,
-  static: false,
+  static: true,
   contractAddress: '',
 };
 
