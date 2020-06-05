@@ -105,6 +105,7 @@ aeternity.initClient = async () => {
         MemoryAccount({keypair: {secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY}}),
       ],
     });
+    aeternity.static = false;
     return aeternity.initProvider(true);
   }
 
