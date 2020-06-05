@@ -23,19 +23,13 @@
       }
     },
     async created() {
-      await Promise.race([
-        new Promise((resolve) => wallet.init(() => {
-          this.foundWallet = true;
-          resolve();
-        })),
-        new Promise((resolve) => setTimeout(resolve, 3000, 'TIMEOUT')),
-      ]).catch(console.error);
-
-      if (await aeternity.initClient()) {
+     aeternity.initClient().then(() => {
         this.foundWallet = true;
-      } else {
-        console.error('Wallet init failed');
-      }
+     });
+
+      wallet.init(() => {
+        this.foundWallet = true;
+      });
     }
   }
 </script>
