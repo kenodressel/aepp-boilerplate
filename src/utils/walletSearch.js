@@ -43,8 +43,8 @@ export const wallet = {
       this.client.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
       await this.client.subscribeAddress('subscribe', 'current');
       aeternity.client = this.client;
-      aeternity.static = false;
       await aeternity.initProvider();
+      aeternity.static = false;
       successCallback();
     };
 
