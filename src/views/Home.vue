@@ -18,6 +18,7 @@
   import axios from 'axios'
   import {AeButton} from '@aeternity/aepp-components/src/components'
   import { EventBus } from '../utils/eventBus';
+  import Util from "../utils/util";
 
   export default {
     name: 'Home',
@@ -36,7 +37,8 @@
         // Display the values if not static client
         if (!aeternity.static) {
           this.address = await aeternity.client.address();
-          this.balance = await aeternity.balance(this.address);
+          this.balance = await aeternity.client.getBalance(this.address)
+            .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''));
 
           // Use the faucet to stock up the account with some balance. This is especially helpful for users
           // who are new to the eco system and are testing your aepp.
