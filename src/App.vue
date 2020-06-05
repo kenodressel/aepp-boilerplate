@@ -13,7 +13,6 @@
 
 <script>
   import aeternity from './utils/aeternity.js'
-  import {wallet} from './utils/walletSearch.js'
 
   export default {
     name: 'app',
@@ -27,7 +26,7 @@
         this.foundWallet = true;
      });
 
-      wallet.init(() => {
+      aeternity.initWalletSearch(() => {
         this.foundWallet = true;
       });
     }
