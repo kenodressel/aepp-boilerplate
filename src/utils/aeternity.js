@@ -18,14 +18,14 @@ const aeternity = {
  * basic values from the wallet.
  * @returns {Promise<boolean>}
  */
-aeternity.initProvider = async () => {
+aeternity.initProvider = async (changedClient = false) => {
   try {
     const networkId = (await aeternity.client.getNodeInfo()).nodeNetworkId;
     const changedNetwork = aeternity.networkId !== networkId;
     aeternity.networkId = networkId
     if (aeternity.contractAddress)
       aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
-    if (changedNetwork) {
+    if (changedClient || changedNetwork) {
       EventBus.$emit('networkChange');
       EventBus.$emit('dataChange');
     }
@@ -101,11 +101,11 @@ aeternity.initClient = async () => {
         MemoryAccount({keypair: {secretKey: process.env.PRIVATE_KEY, publicKey: process.env.PUBLIC_KEY}}),
       ],
     });
-    return aeternity.initProvider();
+    return aeternity.initProvider(true);
   }
 
   if (!aeternity.client) aeternity.client = await aeternity.initStaticClient();
-  return aeternity.initProvider();
+  return aeternity.initProvider(true);
 };
 
 export default aeternity;
