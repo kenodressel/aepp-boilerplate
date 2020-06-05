@@ -1,6 +1,7 @@
 import identity from '../contracts/Idenitity.aes';
 import {Node, Universal, MemoryAccount} from '@aeternity/aepp-sdk/es';
 import {EventBus} from './eventBus';
+import Util from "./util";
 
 const TESTNET_URL = 'https://testnet.aeternity.io';
 const MAINNET_URL = 'https://mainnet.aeternity.io';
@@ -25,13 +26,22 @@ aeternity.initProvider = async () => {
     aeternity.networkId = networkId
     if (aeternity.contractAddress)
       aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
-    if (changedNetwork) EventBus.$emit('networkChange');
+    if (changedNetwork) {
+      EventBus.$emit('networkChange');
+      EventBus.$emit('dataChange');
+    }
     return true;
   } catch (e) {
     console.error(e);
     return false;
   }
 };
+
+aeternity.balance = (address) => {
+  return aeternity.client.balance(address)
+    .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
+    .catch(() => '0');
+}
 
 /**
  * Initialize a static client, mainnet or testnet
