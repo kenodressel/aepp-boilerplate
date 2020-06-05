@@ -17,7 +17,6 @@
   import aeternity from '../utils/aeternity'
   import axios from 'axios'
   import {AeButton} from '@aeternity/aepp-components/src/components'
-  import Util from "../utils/util";
   import { EventBus } from '../utils/eventBus';
 
   export default {
@@ -36,10 +35,8 @@
 
         // Display the values if not static client
         if (!aeternity.static) {
-          this.address = await aeternity.client.address()
-          this.balance = await aeternity.client.balance(this.address)
-            .then(balance => `${Util.atomsToAe(balance)}`.replace(',', ''))
-            .catch(() => '0');
+          this.address = await aeternity.client.address();
+          this.balance = await aeternity.balance(this.address);
 
           // Use the faucet to stock up the account with some balance. This is especially helpful for users
           // who are new to the eco system and are testing your aepp.
@@ -54,9 +51,8 @@
       }
     },
     async mounted() {
-      EventBus.$on('networkChange', this.loadData);
-      EventBus.$on('addressChange', this.loadData);
       // init the client once the component is loaded. This should be done in every view.
+      EventBus.$on('dataChange', this.loadData); // could also listen for addressChange and networkChange separately
       await aeternity.initClient();
       this.loadData();
     },

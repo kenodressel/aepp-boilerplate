@@ -66,7 +66,10 @@ export const wallet = {
         aeternity.initProvider();
       },
       onAddressChange(addresses) {
-        EventBus.$emit('addressChange');
+        if (!addresses.current[aeternity.address]) {
+          EventBus.$emit('addressChange');
+          EventBus.$emit('dataChange');
+        }
       }
     });
 
