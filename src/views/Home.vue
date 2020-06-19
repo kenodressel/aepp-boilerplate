@@ -8,7 +8,8 @@
     <h2>Components Test</h2>
     <span class="hidden">If you see this, tailwindcss is not working</span>
     <div class="mt-2 ml-2">
-      <ae-button face="round" fill="primary"> Primary Button</ae-button>
+      <ae-button face="round" fill="primary" @click="replaceStaticSDK()" v-if="!isStatic()"> Use Static SDK</ae-button>
+      <ae-button face="round" fill="primary" @click="replaceWalletSDK()" v-if="isStatic()"> Use Wallet SDK</ae-button>
     </div>
   </div>
 </template>
@@ -31,12 +32,15 @@
       };
     },
     methods: {
+      isStatic() {
+        return aeternity.static;
+      },
       async loadData() {
         this.networkId = aeternity.networkId;
 
         // Display the values if not static client
-        if (!aeternity.static) {
           this.address = await aeternity.client.address();
+          console.log(this.address, aeternity.client)
           this.balance = await aeternity.client.getBalance(this.address, {format: AE_AMOUNT_FORMATS.AE});
 
           // Use the faucet to stock up the account with some balance. This is especially helpful for users
@@ -48,7 +52,12 @@
               {headers: {'content-type': 'application/x-www-form-urlencoded'}})
               .catch(console.error);
           }
-        }
+      },
+      replaceStaticSDK() {
+        aeternity.replaceStaticSDK()
+      },
+      replaceWalletSDK() {
+        aeternity.replaceWalletSDK()
       }
     },
     async mounted() {

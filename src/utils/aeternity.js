@@ -1,7 +1,8 @@
 import identity from '../contracts/Idenitity.aes';
 import {Node, Universal, MemoryAccount} from '@aeternity/aepp-sdk/es';
 import {EventBus} from './eventBus';
-import BrowserWindowMessageConnection from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message";
+import BrowserWindowMessageConnection
+  from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message";
 import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
 import {RpcAepp} from "@aeternity/aepp-sdk";
 
@@ -15,6 +16,7 @@ const aeternity = {
   networkId: null,
   static: true,
   contractAddress: '',
+  detectedWallet: null,
 };
 
 /**
@@ -58,6 +60,14 @@ aeternity.initStaticClient = async () => {
           url: TESTNET_URL,
         }),
       }],
+    accounts: [
+      MemoryAccount({
+        keypair: {
+          publicKey: "ak_2c5NjmjDyyHhw2oA38V67UQVYoxxtERzFhsZwndLughJnT1ktb",
+          secretKey: "ca32b28c35289a545ef474064dc652648aa90b9a4081ee84c9f3742f8ae084fdd356d2222b84844f710258f24a59d44693828814692fb574ca5a388f98b880ab"
+        }
+      }),
+    ],
   });
   // MAINNET
   /*
@@ -129,12 +139,15 @@ aeternity.getReverseWindow = () => {
 
 aeternity.scanForWallets = async (successCallback) => {
   const scannerConnection = await BrowserWindowMessageConnection({
-    connectionInfo: { id: 'spy' },
+    connectionInfo: {id: 'spy'},
   });
-  const detector = await Detector({ connection: scannerConnection });
-  const handleWallets = async function ({ wallets, newWallet }) {
+  const detector = await Detector({connection: scannerConnection});
+  const handleWallets = async function ({wallets, newWallet}) {
     detector.stopScan();
-    const connected = await aeternity.rpcClient.connectToWallet(await newWallet.getConnection());
+    console.log(wallets, newWallet);
+    const wallet = newWallet ? newWallet : wallets[aeternity.detectedWallet];
+    aeternity.detectedWallet = wallet.id;
+    const connected = await aeternity.rpcClient.connectToWallet(await wallet.getConnection());
     aeternity.rpcClient.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
     await aeternity.rpcClient.subscribeAddress('subscribe', 'current');
     aeternity.client = aeternity.rpcClient;
@@ -157,7 +170,7 @@ aeternity.initWalletSearch = async (successCallback) => {
       {name: 'ae_uat', instance: await Node({url: TESTNET_URL})}
     ],
     compilerUrl: COMPILER_URL,
-    onNetworkChange (params) {
+    onNetworkChange(params) {
       this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
       aeternity.initProvider();
     },
@@ -170,6 +183,15 @@ aeternity.initWalletSearch = async (successCallback) => {
   });
 
   await aeternity.scanForWallets(successCallback);
+}
+
+aeternity.replaceStaticSDK = async () => {
+  aeternity.client = await aeternity.initStaticClient();
+  await aeternity.initProvider(true);
+}
+
+aeternity.replaceWalletSDK = async () => {
+  aeternity.initWalletSearch();
 }
 
 export default aeternity;
